@@ -31,13 +31,17 @@ class AccessControlData:
         if not user or not user_group:
             raise ValueError("Failure: Username or group name cannot be empty")
         if user not in self.users:
-            raise ValueError("Failure: User does not exist!")
+            raise KeyError("Failure: User does not exist!")
 
         self.user_to_groups[user].add(user_group)
 
     def add_object_to_group(self, object_name, object_group):
         if not object_name or not object_group:
             raise ValueError("Object name or group name cannot be empty")
+        if object_name in self.object_to_group:
+            current_group = self.object_to_group[object_name]
+            raise KeyError(f"Object '{object_name}' is already in the group '{current_group}'")
+
         # assuming each object is in only one group
         self.object_to_group[object_name] = object_group
 
