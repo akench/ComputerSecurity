@@ -11,6 +11,7 @@
 ## Setup
 There is minimal setup involved in running our project. You will only have to unzip the tarball which contains our source code and test cases:
 ```
+mkdir Assignment3
 tar -xzvf source.tar.gz -C Assignment3
 cd Assignment3
 ```
@@ -30,10 +31,10 @@ python3 AddUserToGroup.py username usergroup
 # Adding objects to groups
 python3 AddObjectToGroup.py objectname objectgroup
 
-# Defining permissions
+# Defining permissions (objectgroup is optional)
 python3 AddAccess.py operation usergroup [objectgroup]
 
-# Checking if a user has permission to access an object
+# Checking if a user has permission to access an object (objectgroup is optional)
 python3 CanAccess.py operation usergroup [objectgroup]
 ```
 Our scripts generate an `AccessControlData.pickle` file to store all data needed to implement the access controls. If you happen to incorrectly input a test case, you can simply delete this `.pickle` file to start over (although you will have to redo the steps leading up to the incorrect invokation).

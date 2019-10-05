@@ -91,8 +91,6 @@ class AccessControlData:
         for usergroup in self.user_to_groups[username]:
             if (operation, usergroup, objgroup) in self.permissions:
                 return True
-            if (operation, usergroup, None) in self.permissions:
-                return True
         
         return False        
         

@@ -100,13 +100,14 @@ def test_can_access_failure(model: AccessControlData):
     assert not model.can_access("write", "bob", "Handmade's Tail")
 
 
-def test_can_access_success_null_object(model: AccessControlData):
+def test_can_access_null_object(model: AccessControlData):
     model.add_user("bob", "pass")
     model.add_user_to_group("bob", "humans")
     model.add_object_to_group("Handmade's Tail", "books")
     model.add_access("read", "humans")
 
-    assert model.can_access("read", "bob", "Handmade's Tail")
+    assert model.can_access("read", "bob")
+    assert not model.can_access("read", "bob", "Handmade's Tail")
     assert not model.can_access("write", "bob", "Handmade's Tail")
 
 
@@ -153,7 +154,7 @@ def test_can_access(model: AccessControlData):
 
     # Check for various permissions
     assert model.can_access("hunt", "Winnie")
-    assert model.can_access("hunt", "Tigger", "Winnie")
+    assert not model.can_access("hunt", "Tigger", "Winnie")
     assert model.can_access("watch", "Bob", "Avengers")
     assert not model.can_access("watch", "Bob")
     assert not model.can_access("watch", "Bob", "A serious man")
