@@ -65,6 +65,14 @@ class AccessControlData:
         if not operation or not usergroup:
             raise ValueError("Operation and user group must not be empty")
         
+        # Check that a permission with the same operation
+        # and user group does not exist already
+        for op, ugroup, _ in self.permissions:
+            if (op, ugroup) == (operation, usergroup):
+                raise ValueError("A permission for the " + 
+                    f"operation '{operation}' and the usergroup " +
+                    f"'{usergroup}' already exists")
+        
         permission = (operation, usergroup, objgroup)
         if permission in self.permissions:
             raise ValueError(f"The permission '{permission}' already exists")
@@ -83,6 +91,9 @@ class AccessControlData:
         for usergroup in self.user_to_groups[username]:
             if (operation, usergroup, objgroup) in self.permissions:
                 return True
+            if (operation, usergroup, None) in self.permissions:
+                return True
+        
         return False        
         
     def get_objects_in_group(self, target_group):
