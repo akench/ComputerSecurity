@@ -6,6 +6,7 @@
 
 ## Note(s)
 - **Extra credit**: We designed our program such that a user may be a member of multiple groups, and we would like to be graded for such cases.
+- We did **not** implement our access controls such that an object may be in multiple groups. An object may only be in one group.
 
 ## Setup
 There is minimal setup involved in running our project. You will only have to unzip the tarball which contains our source code and test cases:
@@ -45,12 +46,49 @@ We wrote unit tests for our project, contained in the `tests/` folder, to ensure
 - __Logical error cases__, such as a failure to authenticate because of an invalid password, or a denial of access if a user lacks permissions for an object.
 
 ## Implementation
-The key piece of our implementation is the `AccessControlData` class within `persistence.py`. This class handles all operations for our scripts, and therefore stores all data in a single place accessible by all scripts. Whenever one of our scripts is run, we read in the `AccessControlData.pickle` file, and deserialize its contents into an `AccessControlData` instance. Once the invoked operation is completed, we serialize the contents of the `AccessControlData` instance and write it back to `AccessControlData.pickle`.
+The key piece of our implementation is the `AccessControlData` class within the `persistence.py` library. This class handles all operations for our scripts, and therefore stores all data in a single place accessible by all scripts. Whenever one of our scripts is run, we read in the `AccessControlData.pickle` file, and deserialize its contents into an `AccessControlData` instance. Once the invoked operation is completed, we serialize the contents of the `AccessControlData` instance and write it back to `AccessControlData.pickle`.
 
-In particular, the `AccessControlData` class implements the following methods:
+In particular, the `AccessControlData` class implements the following methods (which you will notice correspond directly with the various commands for our scripts):
 - `add_user(username, password)`
-- `authenticate(username, password`
+- `authenticate(username, password)`
 - `add_user_to_group(user, user_group)`
 - `add_object_to_group(object_name, object_group)`
 - `add_access(operation, usergroup, objgroup=None)`
 - `can_access(operation, username, objname=None)`
+
+### Data Structures
+We organize the access control metadata using the following structures in `AccessControlData`:
+- `users`: a hashmap with one-to-one mappings from usernames to their passwords:
+  ```
+  { 
+    username1 : password1, 
+    username2 : password2, 
+    ... 
+  }
+  ```
+- `users_to_groups`: a hashmap with one-to-many mappings from usernames to user groups (with keys being usernames and values being a `set` of the groups that user is in):
+  ```
+  { 
+    username1: { group1, group2 }, 
+    username2: { group2, group3 }, 
+    ... 
+  }
+  ```
+- `objects_to_groups`: a hashmap with one-to-one mappings from object names to object groups: 
+  ```
+  { 
+    object1: object_group1, 
+    object2: object_group3,
+    object3: object_group1,
+    object4: object_group2,
+    ... 
+  }
+  ```
+- `permissions`: a `set` of `(operation, usergroup, objectgroup)` tuples:
+  ```
+  {
+    (read,  students, books),
+    (drink, humans,   beverages),
+    ...
+  }
+  ```
